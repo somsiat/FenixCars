@@ -1,0 +1,123 @@
+---
+import '@fontsource-variable/inter';
+import '@fontsource-variable/oswald';
+import '../styles/global.css';
+
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFloating from '../components/WhatsAppFloating.astro';
+import { company, SITE_URL } from '../data/company';
+import organizationSchema from '../data/schema/organization-website-services.json';
+import breadcrumbGaleria from '../data/schema/breadcrumb-galeria.json';
+import breadcrumbJak from '../data/schema/breadcrumb-jak-sprowadzamy-auto.json';
+import breadcrumbPolityka from '../data/schema/breadcrumb-polityka-prywatnosci.json';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Ścieżka podstrony, np. „/galeria”. Służy do adresu kanonicznego i og:url. */
+  path?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  /** Szablon 404 nie dostaje canonical ani og:url. */
+  includeCanonical?: boolean;
+}
+
+const {
+  title,
+  description,
+  path = '/',
+  ogImage = '/og-fenix-cars.jpg',
+  noindex = false,
+  includeCanonical = true,
+} = Astro.props;
+
+const canonical = new URL(path, SITE_URL).href;
+const ogImageUrl = new URL(ogImage, SITE_URL).href;
+const ogImageAlt = 'Fenix Cars – import aut z USA i Kanady, Rzeszów';
+
+const { geo } = company;
+
+const breadcrumbByPath = {
+  '/galeria': breadcrumbGaleria,
+  '/jak-sprowadzamy-auto': breadcrumbJak,
+  '/polityka-prywatnosci': breadcrumbPolityka,
+} as const;
+
+const breadcrumbData = breadcrumbByPath[path as keyof typeof breadcrumbByPath] ?? null;
+
+const structuredData = {
+  '@context': 'https://schema.org',
+  '@graph': [...organizationSchema['@graph'], ...(breadcrumbData ? [breadcrumbData] : [])],
+};
+---
+
+<!doctype html>
+<html lang="pl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/png" sizes="256x256" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    {includeCanonical && <link rel="canonical" href={canonical} />}
+
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="geo.region" content="PL-18" />
+    <meta name="geo.placename" content="Rzeszów" />
+    <meta name="geo.position" content={`${geo.latitude};${geo.longitude}`} />
+    <meta name="ICBM" content={`${geo.latitude}, ${geo.longitude}`} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={company.name} />
+    <meta property="og:locale" content="pl_PL" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {includeCanonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={ogImageAlt} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+    <meta name="twitter:image:alt" content={ogImageAlt} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+  </head>
+
+  <body>
+    <a class="fx-skip-link" href="#tresc">Przejdź do treści</a>
+    <Header />
+    <main id="tresc">
+      <slot />
+    </main>
+    <Footer />
+    <WhatsAppFloating />
+  </body>
+</html>
+
+<style>
+  .fx-skip-link {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    background: var(--fx-gold);
+    color: #120d02;
+    font-weight: 600;
+    transform: translate(-50%, -110%);
+    transition: transform 0.2s ease;
+  }
+
+  .fx-skip-link:focus-visible {
+    transform: translate(-50%, 0);
+  }
+</style>

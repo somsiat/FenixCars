@@ -1,0 +1,336 @@
+---
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { company, primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+---
+
+<section class="fx-section fx-section--dark" id="kontakt" aria-labelledby="kontakt-title">
+  <div class="fx-container kontakt">
+    <div class="kontakt__intro">
+      <p class="fx-eyebrow">Kontakt</p>
+      <h2 id="kontakt-title">Sprawdź, ile wyjdzie Twoje auto</h2>
+      <p class="fx-lead">
+        Jeśli szukasz importu samochodów w Rzeszowie, napisz model, rocznik i budżet.
+        Kontakt z klientem jest naszą mocną stroną — rozmowa nic nie kosztuje i pozwala
+        od razu wyjaśnić warunki.
+      </p>
+
+      <a
+        class="fx-btn fx-btn--whatsapp fx-btn--lg kontakt__wa"
+        href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon />
+        Napisz na WhatsApp
+      </a>
+
+      <p class="kontakt__firm-label">Adres i dane firmy</p>
+      <ul class="kontakt__list">
+        <li>
+          <a class="kontakt__place" href={company.links.googleMaps} target="_blank" rel="noopener">
+            <span class="kontakt__legal">{company.legalName}</span>
+            <span class="kontakt__addr">{company.address.street}</span>
+            <span class="kontakt__addr">{company.address.postalCode} {company.address.city}</span>
+          </a>
+        </li>
+        <li class="kontakt__registry">
+          <span>NIP: {company.registry.nip}</span>
+          <span>REGON: {company.registry.regon}</span>
+          <span>KRS: {company.registry.krs}</span>
+        </li>
+      </ul>
+    </div>
+
+    <form
+      class="kontakt__form"
+      name="wycena"
+      method="POST"
+      action="/wyslij.php"
+      data-kontakt-form
+    >
+      {/* Pole-pułapka dla botów — ukryte wizualnie, ale obecne w DOM. */}
+      <p class="kontakt__honeypot" aria-hidden="true">
+        <label>
+          Nie wypełniaj tego pola
+          <input name="firma" tabindex="-1" autocomplete="off" />
+        </label>
+      </p>
+
+      <p class="kontakt__error" data-kontakt-error hidden role="alert">
+        Wygląda na to, że formularz został wysłany automatycznie. Odczekaj chwilę i spróbuj
+        ponownie, albo napisz od razu na WhatsAppie.
+      </p>
+
+      <p class="kontakt__error" data-kontakt-send-error hidden role="alert">
+        Nie udało się wysłać. Napisz na WhatsAppie albo spróbuj za chwilę.
+      </p>
+
+      <div class="kontakt__row">
+        <label class="kontakt__field">
+          <span>Imię i nazwisko</span>
+          <input type="text" name="imie" required autocomplete="name" />
+        </label>
+
+        <label class="kontakt__field">
+          <span>Telefon</span>
+          <input type="tel" name="telefon" required autocomplete="tel" />
+        </label>
+      </div>
+
+      <label class="kontakt__field">
+        <span>E-mail</span>
+        <input type="email" name="email" required autocomplete="email" />
+      </label>
+
+      <label class="kontakt__field">
+        <span>Jakie auto Cię interesuje?</span>
+        <input type="text" name="model" placeholder="Np. Dodge Ram 1500, rocznik 2019" />
+      </label>
+
+      <label class="kontakt__field">
+        <span>Budżet całkowity „pod dom”</span>
+        <input type="text" name="budzet" placeholder="Np. 150 000 zł" />
+      </label>
+
+      <label class="kontakt__field">
+        <span>Wiadomość</span>
+        <textarea name="wiadomosc" rows="4" placeholder="Dodatkowe informacje, pytania…"
+        ></textarea>
+      </label>
+
+      <label class="kontakt__consent">
+        <input type="checkbox" name="zgoda" required />
+        <span>
+          Wyrażam zgodę na kontakt w sprawie mojego zapytania. Administratorem danych
+          jest {company.legalName} z siedzibą w Rzeszowie. Szczegóły:
+          {' '}
+          <a href="/polityka-prywatnosci">polityka prywatności</a>.
+        </span>
+      </label>
+
+      <button class="fx-btn fx-btn--primary fx-btn--lg fx-btn--block" type="submit">
+        Wyślij zapytanie o wycenę
+      </button>
+    </form>
+  </div>
+</section>
+
+<script>
+  /**
+   * Druga (obok honeypota) warstwa ochrony przed automatycznym wypełnianiem
+   * formularza. Proste boty spamowe wysyłają formularz od razu po załadowaniu
+   * strony — człowiek potrzebuje co najmniej kilku sekund, żeby przeczytać
+   * pola i coś wpisać. Wstrzymuje zbyt „szybkie” zgłoszenia w przeglądarce.
+   */
+  const form = document.querySelector<HTMLFormElement>('[data-kontakt-form]');
+
+  if (form) {
+    const loadedAt = Date.now();
+    const MIN_FILL_TIME_MS = 2000;
+    const errorBox = form.querySelector<HTMLElement>('[data-kontakt-error]');
+    const sendErrorBox = form.querySelector<HTMLElement>('[data-kontakt-send-error]');
+
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('wyslij') === 'blad' && sendErrorBox) {
+      sendErrorBox.hidden = false;
+      params.delete('wyslij');
+      const next = params.toString();
+      const clean =
+        window.location.pathname + (next ? `?${next}` : '') + window.location.hash;
+      history.replaceState(null, '', clean);
+    }
+
+    form.addEventListener('submit', (event) => {
+      const elapsed = Date.now() - loadedAt;
+
+      if (elapsed < MIN_FILL_TIME_MS) {
+        event.preventDefault();
+        if (sendErrorBox) sendErrorBox.hidden = true;
+        if (errorBox) errorBox.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .kontakt {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .kontakt__wa {
+    margin-top: 1.75rem;
+  }
+
+  .kontakt__firm-label {
+    margin-top: 2rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fx-gold-soft);
+  }
+
+  .kontakt__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 0.75rem;
+    padding-top: 0;
+    border-top: none;
+    font-size: 0.9375rem;
+    color: var(--fx-on-dark-2);
+  }
+
+  .kontakt__list a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .kontakt__phone {
+    font-family: var(--fx-font-display);
+    font-size: 1.0625rem;
+    color: var(--fx-gold-soft);
+  }
+
+  .kontakt__who {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .kontakt__registry {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .kontakt__place {
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  .kontakt__legal {
+    color: var(--fx-on-dark);
+    font-weight: 600;
+  }
+
+  .kontakt__addr {
+    font-size: 0.875rem;
+    color: var(--fx-on-dark-2);
+  }
+
+  .kontakt__consent a {
+    color: var(--fx-gold-deep);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+  }
+
+  .kontakt__form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.75rem;
+    border-radius: var(--fx-radius);
+    background-color: var(--fx-bg);
+    box-shadow: var(--fx-shadow-lg);
+  }
+
+  .kontakt__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .kontakt__field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--fx-ink);
+  }
+
+  .kontakt__field input,
+  .kontakt__field textarea {
+    padding: 0.75rem 0.875rem;
+    border: 1px solid var(--fx-border-strong);
+    border-radius: var(--fx-radius-sm);
+    background-color: var(--fx-bg);
+    color: var(--fx-ink);
+    font: inherit;
+    font-weight: 400;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .kontakt__field input:focus,
+  .kontakt__field textarea:focus {
+    border-color: var(--fx-gold);
+    box-shadow: 0 0 0 3px var(--fx-gold-wash);
+    outline: none;
+  }
+
+  .kontakt__field textarea {
+    resize: vertical;
+  }
+
+  /* Honeypot: pole musi zostać w DOM, ale niewidoczne i pominięte w tab-order. */
+  .kontakt__honeypot {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .kontakt__error {
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(196, 22, 28, 0.35);
+    border-radius: var(--fx-radius-sm);
+    background-color: rgba(196, 22, 28, 0.08);
+    color: var(--fx-red);
+    font-size: 0.875rem;
+  }
+
+  .kontakt__error[hidden] {
+    display: none;
+  }
+
+  .kontakt__consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.625rem;
+    font-size: 0.8125rem;
+    font-weight: 400;
+    color: var(--fx-ink-2);
+  }
+
+  .kontakt__consent input {
+    margin-top: 0.1875rem;
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+    accent-color: var(--fx-gold);
+  }
+
+  @media (min-width: 30rem) {
+    .kontakt__row {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .kontakt {
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 3.5rem;
+      align-items: start;
+    }
+
+    .kontakt__form {
+      padding: 2.25rem;
+    }
+  }
+</style>

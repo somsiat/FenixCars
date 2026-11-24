@@ -1,0 +1,171 @@
+---
+import { faqItems } from '../data/content';
+import { company, primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map((item) => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: stripHtml(item.answer),
+    },
+  })),
+};
+---
+
+<section class="fx-section" id="faq" aria-labelledby="faq-title">
+  <div class="fx-container faq">
+    <div class="faq__intro">
+      <p class="fx-eyebrow">Najczęstsze pytania</p>
+      <h2 id="faq-title">Pytania, które słyszymy najczęściej</h2>
+      <p class="fx-lead">
+        Jeśli czegoś tu brakuje, napisz na WhatsAppie albo zadzwoń - odpowiadamy
+        normalnie i uczciwie, bez owijania w bawełnę.
+      </p>
+      <a
+        class="fx-btn fx-btn--whatsapp faq__cta"
+        href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+        target="_blank"
+        rel="noopener"
+      >
+        Zadaj pytanie na WhatsAppie
+      </a>
+      <p class="faq__hours">{company.openingHours.label}</p>
+    </div>
+
+    <ul class="faq__list">
+      {
+        faqItems.map((item) => (
+          <li>
+            <details class="faq__item">
+              <summary class="faq__question">
+                <span>{item.question}</span>
+                <span class="faq__marker" aria-hidden="true"></span>
+              </summary>
+              <div class="faq__answer" set:html={item.answer} />
+            </details>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+
+<style>
+  .faq {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  .faq__cta {
+    margin-top: 1.5rem;
+  }
+
+  .faq__hours {
+    margin-top: 0.75rem;
+    font-size: 0.8125rem;
+    color: var(--fx-ink-3);
+  }
+
+  .faq__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+  }
+
+  .faq__item {
+    border: 1px solid var(--fx-border);
+    border-radius: var(--fx-radius);
+    background-color: var(--fx-card);
+    box-shadow: var(--fx-shadow-sm);
+    transition: border-color 0.2s ease;
+  }
+
+  .faq__item[open] {
+    border-color: var(--fx-gold-soft);
+  }
+
+  .faq__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.0625rem 1.25rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .faq__question::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Znacznik „plus”, który po otwarciu zamienia się w „minus”. */
+  .faq__marker {
+    position: relative;
+    flex: none;
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .faq__marker::before,
+  .faq__marker::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--fx-gold-deep);
+    transform: translateY(-50%);
+    transition: transform 0.22s ease, opacity 0.22s ease;
+  }
+
+  .faq__marker::after {
+    transform: translateY(-50%) rotate(90deg);
+  }
+
+  .faq__item[open] .faq__marker::after {
+    transform: translateY(-50%) rotate(0deg);
+    opacity: 0;
+  }
+
+  .faq__answer {
+    padding: 0 1.25rem 1.25rem;
+    color: var(--fx-ink-2);
+    font-size: 0.9375rem;
+  }
+
+  .faq__answer :global(p + p) {
+    margin-top: 0.75rem;
+  }
+
+  .faq__answer :global(strong) {
+    color: var(--fx-ink);
+    font-weight: 800;
+  }
+
+  @media (min-width: 64rem) {
+    .faq {
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .faq__intro {
+      position: sticky;
+      top: calc(var(--fx-header-h) + 2rem);
+    }
+  }
+</style>

@@ -1,0 +1,32 @@
+---
+import facebook from '../assets/social/facebook.png';
+import instagram from '../assets/social/instagram.png';
+import tiktok from '../assets/social/tiktok.png';
+import google from '../assets/social/google.png';
+
+interface Props {
+  network: 'facebook' | 'instagram' | 'tiktok' | 'google';
+}
+
+const icons = { facebook, instagram, tiktok, google };
+const { network } = Astro.props;
+---
+
+<span
+  class="social-icon"
+  style={`--social-icon: url("${icons[network].src}")`}
+  aria-hidden="true"
+></span>
+
+<style>
+  /* PNG służy tylko jako kształt (maska), kolor bierze z currentColor — dzięki temu działa złoty hover. */
+  .social-icon {
+    display: inline-block;
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    background-color: currentColor;
+    -webkit-mask: var(--social-icon) center / contain no-repeat;
+    mask: var(--social-icon) center / contain no-repeat;
+  }
+</style>

@@ -1,0 +1,368 @@
+---
+import { Image } from 'astro:assets';
+import logo from '../assets/fenix-cars-logo.png';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import SocialIcon from './SocialIcon.astro';
+import { company, navigation } from '../data/company';
+
+const { address, openingHours, links } = company;
+const year = new Date().getFullYear();
+
+const socials = [
+  { label: 'Facebook', href: links.facebook, network: 'facebook' as const },
+  { label: 'Instagram', href: links.instagram, network: 'instagram' as const },
+  { label: 'TikTok', href: links.tiktok, network: 'tiktok' as const },
+  { label: 'Opinie Google', href: links.googleReviews, network: 'google' as const },
+];
+
+const footerNav = [
+  ...navigation,
+  { label: 'Jak sprowadzamy auto', href: '/jak-sprowadzamy-auto' },
+];
+---
+
+<footer class="ftr">
+  <div class="fx-container ftr__grid">
+    <div class="ftr__brand">
+      <span class="ftr__badge">
+        <Image src={logo} alt={`Logo ${company.name}`} width={112} densities={[1, 2]} loading="lazy" />
+      </span>
+      <div class="ftr__brand-copy">
+        <p class="ftr__about">
+          Sprowadzamy samochody z USA i Kanady - od znalezienia i weryfikacji auta, przez
+          licytację, aż po dostawę pod wskazany adres. Nie licytujemy w ciemno i nie kupujemy
+          aut za wszelką cenę.
+        </p>
+        <a class="fx-btn fx-btn--whatsapp ftr__group" href={links.whatsappGroup} target="_blank" rel="noopener">
+          <WhatsAppIcon />
+          Grupa WhatsApp z selekcją aut
+        </a>
+      </div>
+    </div>
+
+    <ul class="ftr__phones">
+      {
+        company.people.map((person) => (
+          <li>
+            <a class="ftr__link ftr__link--gold" href={`tel:${person.phone}`}>
+              {person.phoneLabel}
+            </a>
+            <span class="ftr__who">{person.name}</span>
+          </li>
+        ))
+      }
+      <li>
+        <a class="ftr__link ftr__mail" href={`mailto:${company.email}`}>{company.email}</a>
+      </li>
+    </ul>
+
+    <nav class="ftr__col ftr__desktop" aria-labelledby="ftr-nav">
+      <p class="ftr__heading" id="ftr-nav">Serwis</p>
+      <ul class="ftr__list">
+        {
+          footerNav.map((item) => (
+            <li>
+              <a class="ftr__link" href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="ftr__col ftr__desktop">
+      <p class="ftr__heading">Kontakt</p>
+      <address class="ftr__address">
+        <span class="ftr__brand-name">Fenix Cars Rzeszów</span>
+        <span class="ftr__legal">{company.legalName}</span>
+        {address.street}<br />
+        {address.postalCode} {address.city}
+        <span class="ftr__service-area">
+          Import samochodów – Rzeszów i Podkarpacie, dostawa także w całej Polsce.
+        </span>
+
+        <ul class="ftr__list ftr__list--contact">
+          {
+            company.people.map((person) => (
+              <li>
+                <a class="ftr__link ftr__link--gold" href={`tel:${person.phone}`}>
+                  {person.phoneLabel}
+                </a>
+                <span class="ftr__who">{person.name}</span>
+              </li>
+            ))
+          }
+          <li>
+            <a class="ftr__link" href={`mailto:${company.email}`}>{company.email}</a>
+          </li>
+        </ul>
+      </address>
+      <p class="ftr__hours">
+        <span class="ftr__hours-label">Godziny otwarcia:</span>
+        {openingHours.label}
+      </p>
+    </div>
+
+    <div class="ftr__col ftr__social-col">
+      <p class="ftr__heading ftr__desktop">Social media</p>
+      <ul class="ftr__list ftr__list--social">
+        {
+          socials.map((item) => (
+            <li>
+              <a class="ftr__social" href={item.href} target="_blank" rel="noopener" aria-label={item.label}>
+                <SocialIcon network={item.network} />
+                <span class="ftr__social-label">{item.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="fx-container ftr__bottom">
+    <p>&copy; {year} {company.legalName} Wszelkie prawa zastrzeżone.</p>
+    <a class="ftr__link" href="/polityka-prywatnosci" rel="privacy-policy">Polityka prywatności</a>
+  </div>
+</footer>
+
+<style>
+  .ftr {
+    background-color: var(--fx-dark);
+    color: var(--fx-on-dark-2);
+    font-size: 0.9375rem;
+  }
+
+  /* Mobile: logo → telefony → ikony social */
+  .ftr__grid {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    padding-block: 2rem;
+    text-align: center;
+  }
+
+  .ftr__desktop {
+    display: none;
+  }
+
+  .ftr__badge {
+    display: inline-flex;
+    padding: 0.5rem;
+    border-radius: var(--fx-radius-sm);
+    background-color: rgba(247, 245, 240, 0.05);
+  }
+
+  .ftr__badge :global(img) {
+    width: 7rem;
+    height: auto;
+  }
+
+  .ftr__about {
+    display: none;
+    max-width: 42ch;
+  }
+
+  .ftr__group {
+    display: none;
+    width: fit-content;
+    margin-top: 1.25rem;
+  }
+
+  .ftr__phones {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ftr__mail {
+    font-size: 0.9375rem;
+    word-break: break-all;
+  }
+
+  .ftr__heading {
+    margin-bottom: 1rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--fx-gold-soft);
+  }
+
+  .ftr__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .ftr__link {
+    transition: color 0.2s ease;
+  }
+
+  .ftr__link:hover {
+    color: var(--fx-gold-soft);
+  }
+
+  .ftr__link--gold {
+    font-family: var(--fx-font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--fx-gold-soft);
+  }
+
+  .ftr__address {
+    font-style: normal;
+    line-height: 1.7;
+  }
+
+  .ftr__brand-name,
+  .ftr__legal,
+  .ftr__service-area {
+    display: block;
+  }
+
+  .ftr__brand-name,
+  .ftr__legal {
+    color: var(--fx-on-dark);
+    font-weight: 700;
+  }
+
+  .ftr__service-area {
+    margin-top: 0.75rem;
+  }
+
+  .ftr__list--contact {
+    margin-top: 1rem;
+  }
+
+  .ftr__who {
+    margin-left: 0.5rem;
+    font-size: 0.9375rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fx-on-dark);
+    opacity: 0.9;
+  }
+
+  .ftr__hours {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+
+  .ftr__hours-label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--fx-gold-soft);
+  }
+
+  .ftr__list--social {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.25rem;
+  }
+
+  .ftr__social {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.625rem;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: var(--fx-radius-sm);
+    transition: color 0.2s ease, background-color 0.2s ease;
+  }
+
+  .ftr__social:hover {
+    color: var(--fx-gold-soft);
+    background-color: rgba(247, 245, 240, 0.06);
+  }
+
+  .ftr__social-label {
+    display: none;
+  }
+
+  .ftr__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1.25rem;
+    border-top: 1px solid rgba(247, 245, 240, 0.1);
+    font-size: 0.8125rem;
+    text-align: center;
+  }
+
+  @media (min-width: 64rem) {
+    .ftr__grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      align-items: start;
+      gap: 2.5rem;
+      padding-block: 3rem;
+      text-align: left;
+    }
+
+    .ftr__desktop {
+      display: block;
+    }
+
+    .ftr__about {
+      display: block;
+      margin-top: 1rem;
+    }
+
+    .ftr__group {
+      display: inline-flex;
+    }
+
+    .ftr__phones {
+      display: none;
+    }
+
+    .ftr__social-col {
+      grid-column: 1 / -1;
+    }
+
+    .ftr__list--social {
+      flex-direction: column;
+      justify-content: flex-start;
+      gap: 0.5rem;
+    }
+
+    .ftr__social {
+      width: auto;
+      height: auto;
+      justify-content: flex-start;
+      border-radius: 0;
+    }
+
+    .ftr__social:hover {
+      background-color: transparent;
+    }
+
+    .ftr__social-label {
+      display: inline;
+    }
+
+    .ftr__bottom {
+      justify-content: flex-start;
+      text-align: left;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .ftr__grid {
+      grid-template-columns: 1.4fr 0.7fr 1fr 0.9fr;
+      gap: 3rem;
+      padding-block: 4.5rem 3rem;
+    }
+
+    .ftr__social-col {
+      grid-column: auto;
+    }
+  }
+</style>

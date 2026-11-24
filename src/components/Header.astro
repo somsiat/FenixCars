@@ -1,0 +1,344 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/fenix-cars-mark.png';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import { company, navigation, primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+---
+
+<header class="hdr" data-header>
+  <div class="fx-container hdr__inner">
+    <a class="brand" href="/" aria-label={`${company.name} - strona główna`}>
+      <span class="brand__badge">
+        <Image src={mark} alt="" width={88} densities={[1, 2]} loading="eager" />
+      </span>
+      <span class="brand__text">
+        <span class="brand__name">Fenix Cars</span>
+        <span class="brand__tag">Import aut USA &amp; Kanada</span>
+      </span>
+    </a>
+
+    <nav class="nav" aria-label="Nawigacja główna">
+      <ul class="nav__list">
+        {
+          navigation.map((item) => (
+            <li>
+              <a class="nav__link" href={item.href}>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="hdr__actions">
+      <a
+        class="fx-btn fx-btn--whatsapp hdr__cta"
+        href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon />
+        Darmowa wycena
+      </a>
+    </div>
+
+    <button
+      class="burger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="menu-mobilne"
+      data-menu-toggle
+    >
+      <span class="burger__bars" aria-hidden="true"></span>
+      <span class="fx-sr-only">Menu</span>
+    </button>
+  </div>
+
+  <div class="panel" id="menu-mobilne" data-menu-panel hidden>
+    <nav class="fx-container panel__inner" aria-label="Nawigacja mobilna">
+      <ul class="panel__list">
+        {
+          navigation.map((item) => (
+            <li>
+              <a class="panel__link" href={item.href} data-menu-close>{item.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <a
+        class="fx-btn fx-btn--whatsapp fx-btn--block"
+        href={company.links.whatsappGroup}
+        target="_blank"
+        rel="noopener"
+      >
+        <WhatsAppIcon />
+        Dołącz do grupy na WhatsApp
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-bottom: 1px solid var(--fx-border);
+    backdrop-filter: blur(12px);
+    transition: box-shadow 0.25s ease, background-color 0.25s ease;
+  }
+
+  .hdr[data-scrolled] {
+    background-color: rgba(255, 255, 255, 0.97);
+    box-shadow: var(--fx-shadow-sm);
+  }
+
+  .hdr__inner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    min-height: var(--fx-header-h);
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-right: auto;
+  }
+
+  /*
+    Godło z logo ma wpalone czarne tło, więc na jasnym nagłówku dajemy je
+    w czarny kafel — wygląda to celowo, a złoto zachowuje kontrast.
+  */
+  .brand__badge {
+    display: grid;
+    place-items: center;
+    padding: 0.25rem 0.375rem;
+    border-radius: var(--fx-radius-sm);
+    background-color: var(--fx-dark);
+  }
+
+  .brand__badge :global(img) {
+    width: 2.25rem;
+    height: auto;
+  }
+
+  .brand__text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+  }
+
+  .brand__name {
+    font-family: var(--fx-font-display);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--fx-ink);
+  }
+
+  .brand__tag {
+    font-size: 0.625rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--fx-ink-3);
+  }
+
+  .nav,
+  .hdr__actions {
+    display: none;
+  }
+
+  .burger {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--fx-border-strong);
+    border-radius: var(--fx-radius-sm);
+    background-color: var(--fx-bg);
+  }
+
+  .burger__bars,
+  .burger__bars::before,
+  .burger__bars::after {
+    position: relative;
+    display: block;
+    width: 1.125rem;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--fx-ink);
+    transition: transform 0.22s ease, background-color 0.22s ease;
+  }
+
+  .burger__bars::before,
+  .burger__bars::after {
+    content: '';
+    position: absolute;
+  }
+
+  .burger__bars::before {
+    transform: translateY(-0.375rem);
+  }
+
+  .burger__bars::after {
+    transform: translateY(0.375rem);
+  }
+
+  .burger[aria-expanded='true'] .burger__bars {
+    background-color: transparent;
+  }
+
+  .burger[aria-expanded='true'] .burger__bars::before {
+    transform: rotate(45deg);
+  }
+
+  .burger[aria-expanded='true'] .burger__bars::after {
+    transform: rotate(-45deg);
+  }
+
+  .panel {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    max-height: calc(100dvh - var(--fx-header-h));
+    overflow-y: auto;
+    background-color: var(--fx-bg);
+    border-bottom: 1px solid var(--fx-border);
+    box-shadow: var(--fx-shadow);
+  }
+
+  .panel[hidden] {
+    display: none;
+  }
+
+  .panel__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding-block: 0.75rem 1.75rem;
+  }
+
+  .panel__link {
+    display: block;
+    padding-block: 0.875rem;
+    border-bottom: 1px solid var(--fx-border);
+    font-size: 1.0625rem;
+    font-weight: 600;
+  }
+
+  @media (min-width: 64rem) {
+    .burger,
+    .panel {
+      display: none;
+    }
+
+    .brand__badge :global(img) {
+      width: 2.625rem;
+    }
+
+    .brand__name {
+      font-size: 1.375rem;
+    }
+
+    .nav {
+      display: block;
+    }
+
+    .nav__list {
+      display: flex;
+      align-items: center;
+      gap: 1.625rem;
+    }
+
+    .nav__link {
+      position: relative;
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: var(--fx-ink-2);
+      transition: color 0.2s ease;
+    }
+
+    .nav__link::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -0.4rem;
+      width: 100%;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--fx-gold-gradient);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.22s ease;
+    }
+
+    .nav__link:hover {
+      color: var(--fx-ink);
+    }
+
+    .nav__link:hover::after {
+      transform: scaleX(1);
+    }
+
+    .hdr__actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: 1.25rem;
+    }
+
+    .hdr__cta {
+      min-height: 2.75rem;
+      padding-inline: 1.125rem;
+      font-size: 0.875rem;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const panel = document.querySelector<HTMLElement>('[data-menu-panel]');
+
+  if (toggle && panel) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+
+    toggle.addEventListener('click', () => {
+      setOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    panel.querySelectorAll('[data-menu-close]').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+
+    // Przejście na desktop musi zamknąć panel, żeby nie zostawić zablokowanego body.
+    window.matchMedia('(min-width: 64rem)').addEventListener('change', (event) => {
+      if (event.matches) setOpen(false);
+    });
+  }
+
+  if (header) {
+    const syncScrollState = () => {
+      header.toggleAttribute('data-scrolled', window.scrollY > 16);
+    };
+    syncScrollState();
+    window.addEventListener('scroll', syncScrollState, { passive: true });
+  }
+</script>

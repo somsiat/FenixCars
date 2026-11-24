@@ -1,0 +1,133 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://fenixcars.pl/#website",
+      "name": "Fenix Cars",
+      "url": "https://fenixcars.pl",
+      "inLanguage": "pl-PL",
+      "publisher": {
+        "@id": "https://fenixcars.pl/#organizacja"
+      }
+    },
+    {
+      "@type": [
+        "Organization",
+        "AutoDealer"
+      ],
+      "@id": "https://fenixcars.pl/#organizacja",
+      "name": "Fenix Cars",
+      "legalName": "FENIX CARS Sp. z o.o.",
+      "description": "Import aut z USA i Kanady. Sprowadzamy pojazdy z dostawą pod wskazany adres. Siedziba: Rzeszów, obsługa klientów z Podkarpacia i całej Polski.",
+      "url": "https://fenixcars.pl",
+      "image": [
+        "https://fenixcars.pl/og-fenix-cars.jpg",
+        "https://fenixcars.pl/logo-fenix-cars.png"
+      ],
+      "logo": {
+        "@type": "ImageObject",
+        "url": "https://fenixcars.pl/logo-fenix-cars.png",
+        "width": 512,
+        "height": 512
+      },
+      "telephone": [
+        "+48603274775",
+        "+48787548618"
+      ],
+      "email": "kontakt@fenixcars.pl",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Towarowa 12/201A",
+        "postalCode": "35-231",
+        "addressLocality": "Rzeszów",
+        "addressRegion": "Podkarpackie",
+        "addressCountry": "PL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 50.0531675,
+        "longitude": 21.9997138
+      },
+      "hasMap": "https://www.google.com/maps/place/Fenix+Cars/@50.0531675,21.9997138,17z",
+      "areaServed": [
+        {
+          "@type": "City",
+          "name": "Rzeszów"
+        },
+        {
+          "@type": "AdministrativeArea",
+          "name": "Podkarpackie"
+        },
+        {
+          "@type": "Country",
+          "name": "Polska"
+        }
+      ],
+      "openingHoursSpecification": [
+        {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday"
+          ],
+          "opens": "09:00",
+          "closes": "17:00"
+        }
+      ],
+      "sameAs": [
+        "https://www.facebook.com/FenixCarsImportAut",
+        "https://www.instagram.com/fenix.cars.rzeszow/",
+        "https://www.tiktok.com/@fenix.cars.rzeszow",
+        "https://www.google.com/maps/place/Fenix+Cars/@50.0531675,21.9997138,17z"
+      ],
+      "makesOffer": [
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@id": "https://fenixcars.pl/#import-usa"
+          }
+        },
+        {
+          "@type": "Offer",
+          "itemOffered": {
+            "@id": "https://fenixcars.pl/#import-kanada"
+          }
+        }
+      ]
+    },
+    {
+      "@type": "Service",
+      "@id": "https://fenixcars.pl/#import-usa",
+      "name": "Import aut z USA",
+      "serviceType": "Pośrednictwo w imporcie pojazdów",
+      "provider": {
+        "@id": "https://fenixcars.pl/#organizacja"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Polska"
+      },
+      "url": "https://fenixcars.pl/",
+      "description": "Wybór i weryfikacja pojazdu, licytacja, organizacja transportu i odprawy oraz dostawa pod wskazany adres."
+    },
+    {
+      "@type": "Service",
+      "@id": "https://fenixcars.pl/#import-kanada",
+      "name": "Import aut z Kanady",
+      "serviceType": "Pośrednictwo w imporcie pojazdów",
+      "provider": {
+        "@id": "https://fenixcars.pl/#organizacja"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "Polska"
+      },
+      "url": "https://fenixcars.pl/",
+      "description": "Wybór i weryfikacja pojazdu, licytacja, organizacja transportu i odprawy oraz dostawa pod wskazany adres."
+    }
+  ]
+}

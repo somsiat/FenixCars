@@ -1,0 +1,52 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Process from '../components/Process.astro';
+import WhatsAppGroup from '../components/WhatsAppGroup.astro';
+import Contact from '../components/Contact.astro';
+
+const title = 'Jak sprowadzamy auto z USA i Kanady krok po kroku | Fenix Cars';
+const description =
+  'Import samochodu z USA pod dom: wybór auta, raporty, licytacja, transport i odprawa. Fenix Cars prowadzi cały proces i przygotuje wycenę przed zakupem.';
+---
+
+<Layout title={title} description={description} path="/jak-sprowadzamy-auto">
+  <header class="fx-section intro">
+    <div class="fx-container">
+      <nav class="crumbs" aria-label="Okruszki">
+        <a href="/">Strona główna</a>
+        <span aria-hidden="true">/</span>
+        <span>Jak sprowadzamy auto</span>
+      </nav>
+      <p class="fx-eyebrow">Import aut z USA i Kanady</p>
+      <h1>Sprowadzanie aut z USA i Kanady – cały proces krok po kroku</h1>
+    </div>
+  </header>
+
+  <Process variant="full" />
+  <WhatsAppGroup variant="panel" />
+  <Contact />
+</Layout>
+
+<style>
+  .intro {
+    padding-bottom: 0;
+  }
+
+  .intro h1 {
+    max-width: 22ch;
+    margin-top: 0.5rem;
+  }
+
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.25rem;
+    font-size: 0.875rem;
+    color: var(--fx-ink-3);
+  }
+
+  .crumbs a:hover {
+    color: var(--fx-gold-deep);
+  }
+</style>

@@ -1,0 +1,77 @@
+# Fenix Cars — Apache (cyber_folks)
+# Plik trafia do dist/ przy `astro build` (katalog public/).
+
+<IfModule mod_autoindex.c>
+  Options -Indexes
+</IfModule>
+
+# --- HTTPS, bez www, adresy bez .html ---
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # HTTP → HTTPS
+  RewriteCond %{HTTPS} !=on
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+  # www.fenixcars.pl → fenixcars.pl
+  RewriteCond %{HTTP_HOST} ^www\.fenixcars\.pl$ [NC]
+  RewriteRule ^ https://fenixcars.pl%{REQUEST_URI} [R=301,L]
+
+  # /index.html → /
+  RewriteCond %{THE_REQUEST} \s/+index\.html[\s?] [NC]
+  RewriteRule ^ / [R=301,L]
+
+  # /galeria.html → /galeria (oraz pozostałe podstrony)
+  RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+  RewriteRule ^ /%1 [R=301,L]
+
+  # /galeria/ → /galeria (spójnie z trailingSlash: never)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^(.+)/$ /$1 [R=301,L]
+
+  # /galeria → galeria.html (format buildu: file)
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME}.html -f
+  RewriteRule ^(.+)$ $1.html [L]
+</IfModule>
+
+ErrorDocument 404 /404.html
+
+# --- Kompresja ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html
+  AddOutputFilterByType DEFLATE text/css
+  AddOutputFilterByType DEFLATE text/javascript
+  AddOutputFilterByType DEFLATE application/javascript
+  AddOutputFilterByType DEFLATE application/json
+  AddOutputFilterByType DEFLATE application/xml
+  AddOutputFilterByType DEFLATE text/xml
+  AddOutputFilterByType DEFLATE image/svg+xml
+</IfModule>
+
+# --- Cache + nagłówki bezpieczeństwa ---
+<IfModule mod_headers.c>
+  <IfModule mod_setenvif.c>
+    SetEnvIf Request_URI "^/_astro/" ASTRO_ASSET
+  </IfModule>
+
+  # Obrazki i fonty (miesiąc) — nie nadpisuj hashed /_astro/*
+  <FilesMatch "\.(?:ico|jpg|jpeg|png|gif|webp|avif|svg|woff|woff2|ttf|otf)$">
+    Header set Cache-Control "public, max-age=2592000" env=!ASTRO_ASSET
+  </FilesMatch>
+
+  # HTML — bez długiego cache
+  <FilesMatch "\.(?:html|htm)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+
+  # /_astro/* — rok, immutable
+  Header set Cache-Control "public, max-age=31536000, immutable" env=ASTRO_ASSET
+
+  Header always set Strict-Transport-Security "max-age=31536000"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+</IfModule>

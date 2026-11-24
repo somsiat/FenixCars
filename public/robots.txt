@@ -1,0 +1,118 @@
+# Domyślnie: wyszukiwarki (Google, Bing, DuckDuckGo…) oraz boty podglądu linków
+# (Facebook, WhatsApp, LinkedIn itd.) mają pełny dostęp — to one budują ruch
+# i widoczność strony. Strona podziękowania jest wyłączona z indeksowania
+# (ma też meta robots="noindex" bezpośrednio w kodzie).
+User-agent: *
+Allow: /
+Disallow: /dziekujemy
+
+# --- Boty AI, które odpowiadają użytkownikom NA ŻYWO — celowo dopuszczone ---
+# To one decydują, czy ChatGPT, Perplexity czy Gemini wspomną o Fenix Cars
+# w rozmowie z użytkownikiem. Blokując je, znikamy z takich odpowiedzi.
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# --- Boty scrapujące treść wyłącznie pod trenowanie przyszłych modeli ---
+# Zablokowane celowo — nie wpływają na dzisiejszą widoczność w czatach AI,
+# a jedynie pobierają treść na zapas, bez żadnego ruchu zwrotnego na stronę.
+# Uwaga: to działa na uczciwość — grzeczne boty honorują ten plik,
+# złośliwe scrapery mogą go zignorować.
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Bytespider
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
+User-agent: meta-externalagent
+Disallow: /
+
+User-agent: Diffbot
+Disallow: /
+
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
+
+User-agent: cohere-ai
+Disallow: /
+
+# --- Skanery i boty SEO/analityczne konkurencji ---
+# Nie są to wyszukiwarki, więc blokada nie wpływa na widoczność w Google.
+# Odciążają jedynie serwer i utrudniają konkurencji analizę profilu linków.
+# Wyjątek: MojeekBot to realna (choć niszowa) wyszukiwarka z UK — jeśli
+# zależy Ci na obecności w Mojeek, usuń poniższy wpis.
+
+User-agent: 008
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: metajobbot
+Disallow: /
+
+User-agent: Exabot
+Disallow: /
+
+User-agent: Ezooms
+Disallow: /
+
+User-agent: fyberspider
+Disallow: /
+
+User-agent: dotbot
+Disallow: /
+
+User-agent: MojeekBot
+Disallow: /
+
+User-agent: BLEXBot
+Disallow: /
+
+User-agent: wotbox
+Disallow: /
+
+User-agent: TwengaBot
+Disallow: /
+
+Sitemap: https://fenixcars.pl/sitemap-index.xml

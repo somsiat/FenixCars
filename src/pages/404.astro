@@ -1,0 +1,54 @@
+---
+import Layout from '../layouts/Layout.astro';
+import WhatsAppIcon from '../components/WhatsAppIcon.astro';
+import { primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+
+const title = 'Nie znaleziono strony | Fenix Cars';
+const description = 'Ta strona nie istnieje. Wróć na stronę główną Fenix Cars lub napisz do nas na WhatsApp.';
+---
+
+<Layout title={title} description={description} path="/404" noindex includeCanonical={false}>
+  <section class="fx-section not-found">
+    <div class="fx-container not-found__inner">
+      <p class="fx-eyebrow">Błąd 404</p>
+      <h1>Nie znaleziono strony</h1>
+      <p class="fx-lead">
+        Adres, którego szukasz, nie istnieje albo został przeniesiony. Wróć na stronę główną
+        albo napisz do nas bezpośrednio.
+      </p>
+
+      <div class="not-found__actions">
+        <a class="fx-btn fx-btn--primary fx-btn--lg" href="/">Wróć na stronę główną</a>
+        <a
+          class="fx-btn fx-btn--whatsapp fx-btn--lg"
+          href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+          target="_blank"
+          rel="noopener"
+        >
+          <WhatsAppIcon />
+          Napisz na WhatsApp
+        </a>
+        <a class="fx-btn fx-btn--outline fx-btn--lg" href="/#kontakt">Kontakt</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .not-found {
+    min-height: 60vh;
+    display: flex;
+    align-items: center;
+  }
+
+  .not-found__inner {
+    max-width: 40rem;
+  }
+
+  .not-found__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+</style>

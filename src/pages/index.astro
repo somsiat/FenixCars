@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Hero from '../components/Hero.astro';
+import WhatsAppGroup from '../components/WhatsAppGroup.astro';
+import Advantages from '../components/Advantages.astro';
+import Process from '../components/Process.astro';
+import Reviews from '../components/Reviews.astro';
+import Faq from '../components/Faq.astro';
+import Contact from '../components/Contact.astro';
+
+const title = 'Import aut z USA i Kanady – Rzeszów | Fenix Cars';
+const description =
+  'Import aut z USA i Kanady z Fenix Cars w Rzeszowie. Sprawdzamy historię, licytujemy i organizujemy transport pod dom. Poznaj proces i poproś o wycenę importu.';
+---
+
+<Layout title={title} description={description} path="/">
+  <Hero />
+  <WhatsAppGroup variant="band" />
+  <Advantages />
+  <Process variant="summary" />
+  <Reviews />
+  <Faq />
+  <Contact />
+</Layout>

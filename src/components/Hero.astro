@@ -1,0 +1,554 @@
+---
+import { Image, getImage } from 'astro:assets';
+import heroOriginal from '../assets/hero-challenger.webp';
+import heroMobile from '../assets/hero-mobile.jpg';
+import logo from '../assets/fenix-cars-logo-clear.png';
+import WhatsAppIcon from './WhatsAppIcon.astro';
+import FlagIcon from './FlagIcon.astro';
+import { company, primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+
+const highlights = [
+  'Raporty Carfax, EpicVIN i AutoCheck bez dodatkowych opłat',
+  'Wyliczenie „pod dom” w złotówkach przed licytacją',
+  'Prowizja dopiero po dostawie samochodu',
+  'Bez depozytu, bez zaliczek',
+];
+
+const mobileImg = await getImage({
+  src: heroMobile,
+  widths: [640, 960, 1280],
+  format: 'webp',
+  quality: 90,
+});
+
+const desktopImg = await getImage({
+  src: heroOriginal,
+  widths: [960, 1440, 1920, 2560],
+  format: 'webp',
+  quality: 90,
+});
+---
+
+<section class="hero" aria-labelledby="hero-title">
+  <div class="hero__media">
+    <picture>
+      <source
+        media="(min-width: 64rem)"
+        srcset={desktopImg.srcSet.attribute}
+        sizes="100vw"
+      />
+      <img
+        class="hero__img"
+        src={mobileImg.src}
+        srcset={mobileImg.srcSet.attribute}
+        sizes="100vw"
+        alt="Twoje następne auto jest za oceanem. Import pojazdów z USA i Kanady — Fenix Cars"
+        width={mobileImg.attributes.width}
+        height={mobileImg.attributes.height}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+      />
+    </picture>
+  </div>
+
+  <div class="hero__logo" aria-hidden="true">
+    <Image
+      src={logo}
+      alt=""
+      width={320}
+      densities={[1, 2]}
+      format="webp"
+      quality={100}
+      loading="eager"
+    />
+  </div>
+
+  <div class="fx-container hero__visual-inner">
+    <div class="hero__top">
+      <h1 id="hero-title">
+        <span class="hero__title-line">Twoje następne auto</span>
+        <span class="hero__title-line">
+          jest za <span class="hero__accent">oceanem</span>
+        </span>
+      </h1>
+      <p class="hero__tagline">
+        <span class="hero__tagline-dash" aria-hidden="true"></span>
+        <span class="hero__tagline-text">Import pojazdów z USA i Kanady</span>
+        <span class="hero__tagline-flags">
+          <FlagIcon code="us" />
+          <FlagIcon code="ca" />
+        </span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="hero-intro fx-section" aria-label="Dlaczego Fenix Cars">
+  <div class="hero-intro__bg" aria-hidden="true">
+    <Image
+      src={heroOriginal}
+      alt="Samochód – Fenix Cars, import aut z USA i Kanady"
+      widths={[960, 1440]}
+      sizes="100vw"
+      quality={50}
+      format="webp"
+      loading="lazy"
+    />
+  </div>
+
+  <div class="fx-container hero-intro__grid">
+    <div class="hero-intro__col">
+      <p class="hero-intro__badge">
+        <span class="hero-intro__dot" aria-hidden="true"></span>
+        Rzeszów · Podkarpacie · obsługa w całej Polsce
+      </p>
+
+      <p class="hero-intro__lead">
+        Import aut z USA i Kanady w Fenix Cars to konkretna i zarazem kompleksowa usługa. Sprowadzenie samochodu jest poważną decyzją, 
+        dlatego po drugiej stronie jest człowiek: sprawdzamy, wyliczamy, doradzamy i ostrzegamy przed ryzykiem. Sprowadzamy pojazdy
+        pod wskazany adres zarówno do klientów z Podkarpacia jak i całej Polski.
+      </p>
+
+      <ul class="hero-intro__highlights">
+        {highlights.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+
+    <div class="hero-intro__col">
+      <div class="hero-intro__actions">
+        <a class="fx-btn fx-btn--primary fx-btn--lg" href="/#kontakt">
+          Sprawdź szacowany koszt pojazdu
+        </a>
+        <a
+          class="fx-btn fx-btn--whatsapp fx-btn--lg"
+          href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+          target="_blank"
+          rel="noopener"
+        >
+          <WhatsAppIcon />
+          Napisz na WhatsApp
+        </a>
+      </div>
+
+      <p class="hero-intro__phones">
+        <span class="hero-intro__phones-label">Rozmowa nic nie kosztuje, a pozwala wiele wyjaśnić:</span>
+        <span class="hero-intro__phones-list">
+          {
+            company.people.map((person) => (
+              <a href={`tel:${person.phone}`}>
+                {person.phoneLabel} ({person.name})
+              </a>
+            ))
+          }
+        </span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style is:inline>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--fx-dark);
+    color: var(--fx-on-dark);
+    /* Mobile: proporcje kadru z napisami — bez przycinania */
+    aspect-ratio: 1024 / 851;
+  }
+
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__media picture,
+  .hero__media img,
+  .hero__img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    pointer-events: none;
+  }
+
+  /* HTML compose tylko desktop — mobile ma napisy/logo w grafice */
+  .hero__logo {
+    display: none;
+  }
+
+  /* Tytuł w DOM na mobile (SEO), wizualnie w grafice */
+  .hero__visual-inner {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .hero h1 {
+    font-family: var(--fx-font-display);
+    font-size: clamp(1.55rem, 6.2vw, 2.15rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__title-line {
+    display: block;
+  }
+
+  .hero__title-line:first-child {
+    white-space: nowrap;
+  }
+
+  .hero__title-line + .hero__title-line {
+    margin-top: 0.18em;
+  }
+
+  .hero__accent {
+    /* Solid gold — clip+transparent psuło się z czarnym text-shadow (wychodziło czarne) */
+    color: var(--fx-gold-soft);
+    -webkit-text-fill-color: var(--fx-gold-soft);
+  }
+
+  .hero__tagline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.5rem;
+    margin-top: 0.85rem;
+    font-family: var(--fx-font-display);
+    font-size: clamp(1.35rem, 5.8vw, 1.7rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--fx-gold-soft);
+    text-shadow: 0 1px 10px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__tagline-dash {
+    flex-shrink: 0;
+    width: 1.25rem;
+    height: 2px;
+    border-radius: 2px;
+    background-color: var(--fx-gold-soft);
+  }
+
+  .hero__tagline-text {
+    white-space: normal;
+  }
+
+  .hero__tagline-flags {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    flex-shrink: 0;
+  }
+
+  .hero__tagline-flags .flag-icon {
+    width: 1.7rem;
+    height: 1.15rem;
+  }
+
+  /* ---- Intro: mobile = ciemne rozmycie (jak wcześniej) ---- */
+  .hero-intro {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    background-color: var(--fx-dark);
+    color: var(--fx-on-dark);
+    /* Mobile: mniejszy odstęp od hero do badge'a */
+    padding-block: 1.25rem 2rem;
+  }
+
+  .hero-intro__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero-intro__bg picture,
+  .hero-intro__bg img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 55% center;
+    filter: blur(28px) saturate(1.15);
+    transform: scale(1.12);
+  }
+
+  .hero-intro__bg::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(
+        160deg,
+        rgba(18, 14, 10, 0.88) 0%,
+        rgba(28, 22, 14, 0.82) 45%,
+        rgba(16, 14, 12, 0.9) 100%
+      );
+  }
+
+  .hero-intro__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: 2rem;
+  }
+
+  .hero-intro__col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .hero-intro__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.375rem 0.875rem;
+    border: 1px solid rgba(230, 199, 101, 0.35);
+    border-radius: 999px;
+    background-color: rgba(18, 17, 16, 0.4);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--fx-gold-soft);
+  }
+
+  .hero-intro__dot {
+    width: 0.4375rem;
+    height: 0.4375rem;
+    border-radius: 999px;
+    background-color: var(--fx-whatsapp);
+  }
+
+  .hero-intro__lead {
+    color: var(--fx-on-dark);
+    font-size: 0.98rem;
+    max-width: 42rem;
+  }
+
+  .hero-intro__highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    width: 100%;
+  }
+
+  .hero-intro__highlights li {
+    position: relative;
+    padding-left: 1.625rem;
+    font-size: 0.9rem;
+  }
+
+  .hero-intro__highlights li::before {
+    content: '';
+    position: absolute;
+    left: 0.1875rem;
+    top: 0.5em;
+    width: 0.4375rem;
+    height: 0.75rem;
+    border-right: 2px solid var(--fx-gold-soft);
+    border-bottom: 2px solid var(--fx-gold-soft);
+    transform: rotate(45deg);
+  }
+
+  .hero-intro__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .hero-intro__actions .fx-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-intro__phones {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+    font-size: 0.9375rem;
+    color: var(--fx-on-dark-2);
+  }
+
+  .hero-intro__phones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+
+  .hero-intro__phones a {
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--fx-gold-soft);
+    white-space: nowrap;
+  }
+
+  .hero-intro__phones a:hover {
+    color: var(--fx-gold-bright);
+  }
+
+  @media (min-width: 40rem) {
+    .hero-intro__grid {
+      grid-template-columns: 1.15fr 0.95fr;
+      gap: 2.5rem;
+      align-items: start;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .hero {
+      aspect-ratio: auto;
+      height: min(calc(100svh - var(--fx-header-h)), 55.77vw);
+      min-height: 32rem;
+    }
+
+    .hero__media .hero__img {
+      object-position: 62% 76%;
+    }
+
+    .hero__media::after {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.62) 22%,
+        rgba(0, 0, 0, 0.2) 42%,
+        transparent 58%
+      );
+    }
+
+    .hero__logo {
+      display: block;
+      position: absolute;
+      top: 1.25rem;
+      right: 1.5rem;
+      z-index: 3;
+      width: clamp(12rem, 15vw, 16rem);
+      pointer-events: none;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.6));
+    }
+
+    .hero__logo picture,
+    .hero__logo img {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+
+    /* Napisy: wyżej i bardziej w prawo */
+    .hero__visual-inner {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      width: auto;
+      height: 100%;
+      min-height: 0;
+      margin: 0;
+      max-width: none;
+      padding: 2.75rem var(--fx-gutter) 2rem;
+      overflow: visible;
+      clip: unset;
+      clip-path: none;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .hero__top {
+      position: relative;
+      max-width: 48rem;
+      margin-inline: auto;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(2.35rem, 4.2vw, 3.75rem);
+      line-height: 0.95;
+      letter-spacing: 0.01em;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+    }
+
+    .hero__accent {
+      color: var(--fx-gold-soft);
+      -webkit-text-fill-color: var(--fx-gold-soft);
+    }
+
+    .hero__title-line + .hero__title-line {
+      margin-top: 0.22em;
+    }
+
+    .hero__tagline {
+      justify-content: center;
+      gap: 0.85rem;
+      margin-top: 1.35rem;
+      font-size: clamp(1.5rem, 2.4vw, 2rem);
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      color: var(--fx-gold-soft);
+      text-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+    }
+
+    .hero__tagline-dash {
+      width: 2.75rem;
+      height: 1px;
+      background-color: var(--fx-gold-soft);
+    }
+
+    .hero__tagline-flags {
+      gap: 0.6rem;
+      margin-left: 0.4rem;
+    }
+
+    .hero__tagline-flags .flag-icon {
+      width: 2.35rem;
+      height: 1.55rem;
+    }
+
+    .hero-intro {
+      padding-block: 3rem;
+    }
+
+    .hero-intro__lead {
+      font-size: 1.05rem;
+    }
+
+    .hero-intro__grid {
+      gap: 3.5rem;
+    }
+
+    .hero-intro__actions .fx-btn {
+      width: auto;
+      min-width: 100%;
+    }
+  }
+</style>

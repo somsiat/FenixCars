@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import whatsappLogo from '../assets/whatsapp-logo.png';
+import { primaryContact, waLink, DEFAULT_WA_MESSAGE } from '../data/company';
+
+---
+
+<a
+  class="wa-float"
+  href={waLink(primaryContact.phone, DEFAULT_WA_MESSAGE)}
+  target="_blank"
+  rel="noopener"
+  aria-label="Napisz na WhatsApp"
+  data-wa-float
+>
+  <Image src={whatsappLogo} alt="" width={56} densities={[1, 2]} loading="lazy" />
+</a>
+
+<style>
+  .wa-float {
+    position: fixed;
+    right: 1.125rem;
+    bottom: 1.125rem;
+    z-index: 40;
+    display: grid;
+    place-items: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 999px;
+    background-color: var(--fx-bg);
+    box-shadow: var(--fx-shadow-lg);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      visibility 0.2s ease;
+  }
+
+  .wa-float:hover {
+    transform: translateY(-3px) scale(1.04);
+  }
+
+  .wa-float :global(img) {
+    width: 2.375rem;
+    height: 2.375rem;
+  }
+
+  .wa-float[data-hidden] {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(0.5rem) scale(0.9);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wa-float {
+      transition: none;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .wa-float {
+      right: 1.75rem;
+      bottom: 1.75rem;
+    }
+  }
+</style>
+
+<script>
+  const floating = document.querySelector<HTMLAnchorElement>('[data-wa-float]');
+
+  if (floating && 'IntersectionObserver' in window) {
+    const otherWaButtons = document.querySelectorAll<HTMLElement>(
+      '.fx-btn--whatsapp:not([data-wa-float])'
+    );
+
+    if (otherWaButtons.length > 0) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          const anyVisible = entries.some((entry) => entry.isIntersecting);
+          floating.toggleAttribute('data-hidden', anyVisible);
+        },
+        { threshold: 0.4 }
+      );
+
+      otherWaButtons.forEach((button) => observer.observe(button));
+    }
+  }
+</script>

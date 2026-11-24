@@ -1,0 +1,396 @@
+---
+import { company } from '../data/company';
+import { reviewScore, reviews, sourceLabel, starLabel } from '../data/reviews';
+---
+
+<section class="fx-section" id="opinie" aria-labelledby="opinie-title">
+  <div class="fx-container">
+    <div class="rev__head">
+      <div>
+        <p class="fx-eyebrow">Opinie klientów</p>
+        <h2 id="opinie-title">Nasze realizacje i opinie mówią same za siebie</h2>
+        <p class="fx-lead">
+          Doświadczenia osób, które zaufały nam wcześniej, są najlepszym potwierdzeniem,
+          że warto powierzyć nam import swojego samochodu.
+        </p>
+      </div>
+
+      <div class="rev__score">
+        <span class="rev__score-value">{reviewScore.rating.toFixed(1).replace('.', ',')}</span>
+        <span class="rev__stars" aria-hidden="true">{starLabel(reviewScore.rating)}</span>
+        <span class="rev__score-count">{reviewScore.label}</span>
+      </div>
+    </div>
+
+    <div class="rev__slider" data-slider>
+      <button
+        class="rev__nav rev__nav--prev"
+        type="button"
+        data-slider-prev
+        aria-label="Poprzednie opinie"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M15 5 8 12l7 7"></path>
+        </svg>
+      </button>
+
+      <ul class="rev__track" data-slider-track>
+        {
+          reviews.map((review) => (
+            <li class="rev__slide">
+              <article class="rev__card" data-review-card>
+                <p class="rev__card-stars" aria-label={`Ocena: ${review.rating} z 5`}>
+                  {starLabel(review.rating)}
+                </p>
+                <blockquote class="rev__quote" data-quote>„{review.text}”</blockquote>
+                <button class="rev__more" type="button" hidden data-quote-toggle>
+                  Więcej
+                </button>
+                <div class="rev__author">
+                  <div class="rev__meta">
+                    <span class="rev__name">{review.author}</span>
+                    <span class="rev__source">
+                      {sourceLabel(review.source)}
+                      {review.date ? ` · ${review.date}` : ''}
+                    </span>
+                  </div>
+                </div>
+              </article>
+            </li>
+          ))
+        }
+      </ul>
+
+      <button
+        class="rev__nav rev__nav--next"
+        type="button"
+        data-slider-next
+        aria-label="Następne opinie"
+      >
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <path
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m9 5 7 7-7 7"></path>
+        </svg>
+      </button>
+    </div>
+
+    <div class="rev__actions">
+      <a class="fx-btn fx-btn--primary" href="/galeria">
+        Nasze ostatnie projekty
+      </a>
+      <a class="fx-btn fx-btn--dark" href={company.links.googleReviews} target="_blank" rel="noopener">
+        Wszystkie opinie w Google
+      </a>
+      <a class="fx-btn fx-btn--outline" href={company.links.facebookReviews} target="_blank" rel="noopener">
+        Wszystkie opinie na Facebooku
+      </a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rev__head {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .rev__score {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    align-self: start;
+    padding: 0.875rem 1.125rem;
+    border: 1px solid var(--fx-border);
+    border-radius: var(--fx-radius);
+    background-color: var(--fx-gold-wash);
+  }
+
+  .rev__score-value {
+    font-family: var(--fx-font-display);
+    font-size: 1.875rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--fx-ink);
+  }
+
+  .rev__stars {
+    color: var(--fx-gold);
+    letter-spacing: 0.1em;
+  }
+
+  .rev__score-count {
+    width: 100%;
+    font-size: 0.8125rem;
+    color: var(--fx-ink-3);
+  }
+
+  .rev__slider {
+    position: relative;
+    margin-top: 1.75rem;
+    padding-inline: 2.75rem;
+  }
+
+  .rev__track {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    padding-block: 0.25rem;
+  }
+
+  .rev__track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .rev__slide {
+    scroll-snap-align: start;
+    min-width: 0;
+  }
+
+  .rev__card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+    min-height: 17.5rem;
+    padding: 1.5rem;
+    border: 1px solid var(--fx-border);
+    border-radius: var(--fx-radius);
+    background-color: var(--fx-card);
+    box-shadow: var(--fx-shadow-sm);
+  }
+
+  .rev__quote {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+    margin: 0;
+    color: var(--fx-ink-2);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .rev__quote[data-open] {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+    white-space: pre-line;
+  }
+
+  .rev__more {
+    align-self: start;
+    margin-top: -0.25rem;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--fx-gold-deep);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .rev__more:hover {
+    text-decoration: underline;
+  }
+
+  .rev__author {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--fx-border);
+  }
+
+  .rev__meta {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.3;
+  }
+
+  .rev__name {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+
+  .rev__source {
+    font-size: 0.75rem;
+    color: var(--fx-ink-3);
+  }
+
+  .rev__card-stars {
+    color: var(--fx-gold);
+    font-size: 0.9375rem;
+    letter-spacing: 0.08em;
+  }
+
+  .rev__nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border: 1px solid var(--fx-border-strong);
+    border-radius: 999px;
+    background-color: var(--fx-card);
+    box-shadow: var(--fx-shadow);
+    color: var(--fx-ink);
+    transform: translateY(-50%);
+  }
+
+  .rev__nav:hover {
+    border-color: var(--fx-gold);
+    color: var(--fx-gold-deep);
+  }
+
+  .rev__nav--prev {
+    left: 0;
+  }
+
+  .rev__nav--next {
+    right: 0;
+  }
+
+  /* Mobile: przyciski w kolumnie, ta sama szerokość (stretch), wyśrodkowane
+     jako blok. Na szerszych ekranach wracają obok siebie, każdy „na miarę”. */
+  .rev__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  @media (min-width: 40rem) {
+    .rev__actions {
+      flex-direction: row;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem 1.25rem;
+    }
+  }
+
+  /*
+   * Sekcja kończy się krótkimi przyciskami, więc pełen odstęp między
+   * sekcjami (padding-block sekcji na dole + padding-block FAQ na górze)
+   * robi się tu za duży - przycinamy dół samej sekcji na mobile.
+   */
+  @media (max-width: 47.99rem) {
+    #opinie {
+      padding-bottom: 2rem;
+    }
+  }
+
+  @media (min-width: 48rem) {
+    .rev__track {
+      grid-auto-columns: calc((100% - 1rem) / 2);
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .rev__head {
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .rev__track {
+      grid-auto-columns: calc((100% - 2rem) / 3);
+      gap: 1rem;
+    }
+
+    .rev__slider {
+      padding-inline: 3.25rem;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-review-card]').forEach((card) => {
+    const quote = card.querySelector<HTMLElement>('[data-quote]');
+    const toggle = card.querySelector<HTMLButtonElement>('[data-quote-toggle]');
+    if (!quote || !toggle) return;
+
+    if (quote.scrollHeight > quote.clientHeight + 2) {
+      toggle.hidden = false;
+    }
+
+    toggle.addEventListener('click', () => {
+      const open = quote.toggleAttribute('data-open');
+      toggle.textContent = open ? 'Zwiń' : 'Więcej';
+    });
+  });
+
+  const slider = document.querySelector<HTMLElement>('[data-slider]');
+  const track = slider?.querySelector<HTMLElement>('[data-slider-track]');
+  const prev = slider?.querySelector<HTMLButtonElement>('[data-slider-prev]');
+  const next = slider?.querySelector<HTMLButtonElement>('[data-slider-next]');
+
+  if (slider && track && prev && next && slider.dataset.ready !== 'true') {
+    slider.dataset.ready = 'true';
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const step = () => {
+      const slide = track.querySelector<HTMLElement>('.rev__slide');
+      if (!slide) return 0;
+      const gap = parseFloat(getComputedStyle(track).gap) || 0;
+      return slide.getBoundingClientRect().width + gap;
+    };
+
+    const go = (direction: number) => {
+      const width = step();
+      if (!width) return;
+
+      const max = Math.max(0, track.scrollWidth - track.clientWidth);
+      const atStart = track.scrollLeft <= 8;
+      const atEnd = track.scrollLeft >= max - 8;
+      let left = track.scrollLeft + direction * width;
+
+      if (direction > 0 && atEnd) left = 0;
+      if (direction < 0 && atStart) left = max;
+
+      track.scrollTo({ left, behavior: reducedMotion ? 'auto' : 'smooth' });
+    };
+
+    prev.addEventListener('click', () => go(-1));
+    next.addEventListener('click', () => go(1));
+
+    if (!reducedMotion) {
+      let timer = window.setTimeout(() => {
+        timer = window.setInterval(() => go(1), 6000);
+      }, 6000);
+      const pause = () => window.clearInterval(timer);
+      const resume = () => {
+        pause();
+        timer = window.setInterval(() => go(1), 6000);
+      };
+
+      slider.addEventListener('mouseenter', pause);
+      slider.addEventListener('mouseleave', resume);
+      slider.addEventListener('focusin', pause);
+      slider.addEventListener('focusout', resume);
+      track.addEventListener('pointerdown', pause);
+    }
+  }
+</script>
